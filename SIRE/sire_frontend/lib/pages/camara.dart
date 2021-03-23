@@ -256,7 +256,8 @@ class _MainView extends StatelessWidget {
     var headers = <String,String>{
       'Content-type' : 'application/json',
       'Accept': 'application/json',
-      'file_name': '1-1-1.jpg',
+      'file_name': idCliente + '-' + idContrato.toString() + '-'
+          + idCuota.toString() + '.jpg',
       'file_type': 'image/jpeg'
     };
 
