@@ -23,6 +23,7 @@ import 'package:sire_frontend/main.dart';
 import 'package:sire_frontend/pages/camara.dart';
 
 class CuotasView extends StatelessWidget {
+
   const CuotasView({
     this.heroLabel,
     this.heroAmount,
@@ -228,11 +229,12 @@ List<EntityCuotasView> buildContratoDataListViews(
 }
 
 class EntityCuotasDetailsPage extends StatelessWidget {
+
+  EntityCuotasDetailsPage({this.numContrato});
+
   final List<DetailedEventData> items =
   DummyDataService.getDetailedEventItems();
   final int numContrato;
-
-  EntityCuotasDetailsPage({this.numContrato});
 
   Future<List<DetailedCuotaData>> getDetailedCuotaItems(int numContrato) async {
     var domain = 'sire.bmcmotors.com.ec';
@@ -280,11 +282,11 @@ class EntityCuotasDetailsPage extends StatelessWidget {
                 ),
                 body: Column(
                   children: [
-                    SizedBox(
+                    /*SizedBox(
                       height: 200,
                       width: double.infinity,
                       child: RallyLineChart(events: items),
-                    ),
+                    ),*/
                     Expanded(
                       child: Padding(
                         padding: isDesktop
@@ -299,6 +301,9 @@ class EntityCuotasDetailsPage extends StatelessWidget {
                                 fechaCuota: detailedEventData.fechaCuota,
                                 valorCuota: detailedEventData.valorCuota,
                                 actualizoPor: detailedEventData.actualizoPor,
+                                codCliente: detailedEventData.codCliente,
+                                numContrato: detailedEventData.numContrato,
+                                nroCuota: detailedEventData.nroCuota,
                               ),
                           ],
                         ),
@@ -357,7 +362,11 @@ class _DetailedCuotasCard extends StatelessWidget {
           MaterialPageRoute(
               builder: (context) =>
                   TakePictureScreen(
-                      camera: firstCamera
+                    camera: firstCamera,
+                    idCliente: codCliente,
+                    idContrato: numContrato,
+                    idCuota: nroCuota,
+                    valorCuota: valorCuota,
                   )
           ),
         )

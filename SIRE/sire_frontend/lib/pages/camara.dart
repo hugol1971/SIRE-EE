@@ -13,13 +13,22 @@ import 'package:http/http.dart' as http;
 
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'package:sire_frontend/pages/home.dart';
 
 class TakePictureScreen extends StatefulWidget {
   final CameraDescription camera;
+  final String idCliente;
+  final int idContrato;
+  final int idCuota;
+  final double valorCuota;
 
   const TakePictureScreen({
     Key key,
     @required this.camera,
+    @required this.idCliente,
+    @required this.idContrato,
+    @required this.idCuota,
+    @required this.valorCuota,
   }) : super(key: key);
 
   @override
@@ -29,9 +38,11 @@ class TakePictureScreen extends StatefulWidget {
 class TakePictureScreenState extends State<TakePictureScreen> with RestorationMixin {
   CameraController _controller;
   Future<void> _initializeControllerFuture;
-  final RestorableTextEditingController _fechaCuotaController =
+  final RestorableTextEditingController _fechaReciboController =
   RestorableTextEditingController();
-  final RestorableTextEditingController _valorCuotaController =
+  final RestorableTextEditingController _valorReciboController =
+  RestorableTextEditingController();
+  final RestorableTextEditingController _nroDocumentController =
   RestorableTextEditingController();
 
   @override
@@ -39,8 +50,9 @@ class TakePictureScreenState extends State<TakePictureScreen> with RestorationMi
 
   @override
   void restoreState(RestorationBucket oldBucket, bool initialRestore) {
-    registerForRestoration(_fechaCuotaController, restorationId);
-    registerForRestoration(_valorCuotaController, restorationId);
+    registerForRestoration(_fechaReciboController, restorationId);
+    registerForRestoration(_valorReciboController, restorationId);
+    registerForRestoration(_nroDocumentController, restorationId);
   }
 
   @override
@@ -93,9 +105,14 @@ class TakePictureScreenState extends State<TakePictureScreen> with RestorationMi
               context,
               MaterialPageRoute(
                   builder: (context) => DisplayPictureScreen(
-                    imagePath: image?.path,
-                    fechaCuotaController: _fechaCuotaController.value,
-                    valorCuotaController: _valorCuotaController.value,
+                      imagePath: image?.path,
+                      fechaReciboController: _fechaReciboController.value,
+                      valorReciboController: _valorReciboController.value,
+                      nroDocumentController: _nroDocumentController.value,
+                      idCliente: widget.idCliente,
+                      idContrato: widget.idContrato,
+                      idCuota: widget.idCuota,
+                      valorCuota: widget.valorCuota
                   )
               ),
             );
@@ -109,16 +126,27 @@ class TakePictureScreenState extends State<TakePictureScreen> with RestorationMi
 }
 
 class DisplayPictureScreen extends StatelessWidget {
-  final String imagePath;
-  final TextEditingController fechaCuotaController;
-  final TextEditingController valorCuotaController;
 
   const DisplayPictureScreen({
     Key key,
     @required this.imagePath,
-    @required this.fechaCuotaController,
-    @required this.valorCuotaController,
+    @required this.fechaReciboController,
+    @required this.valorReciboController,
+    @required this.nroDocumentController,
+    @required this.idCliente,
+    @required this.idContrato,
+    @required this.idCuota,
+    @required this.valorCuota,
   }) : super(key: key);
+
+  final String imagePath;
+  final TextEditingController fechaReciboController;
+  final TextEditingController valorReciboController;
+  final TextEditingController nroDocumentController;
+  final String idCliente;
+  final int idContrato;
+  final int idCuota;
+  final double valorCuota;
 
   @override
   Widget build(BuildContext context) {
@@ -136,9 +164,18 @@ class DisplayPictureScreen extends StatelessWidget {
           ),
         ),
         body: _MainView(
-          imageController: Image.file(File(imagePath)),
-          fechaCuotaController: fechaCuotaController,
-          valorCuotaController: valorCuotaController,
+          imageController: Image.file(
+            File(imagePath),
+            height: 450,
+          ),
+          imagePath: imagePath,
+          fechaReciboController: fechaReciboController,
+          valorReciboController: valorReciboController,
+          nroDocumentController: nroDocumentController,
+          idCliente: idCliente,
+          idContrato: idContrato,
+          idCuota: idCuota,
+          valorCuota: valorCuota,
         ),
       ),
     );
@@ -146,48 +183,144 @@ class DisplayPictureScreen extends StatelessWidget {
 }
 
 class _MainView extends StatelessWidget {
-  final Image imageController;
-  final TextEditingController fechaCuotaController;
-  final TextEditingController valorCuotaController;
-  final TextEditingController nroDocumentController;
 
   const _MainView({
     Key key,
     this.imageController,
-    this.fechaCuotaController,
-    this.valorCuotaController,
+    this.imagePath,
+    this.fechaReciboController,
+    this.valorReciboController,
     this.nroDocumentController,
+    this.idCliente,
+    this.idContrato,
+    this.idCuota,
+    this.valorCuota
   }) : super(key: key);
 
+  final Image imageController;
+  final String imagePath;
+  final TextEditingController fechaReciboController;
+  final TextEditingController valorReciboController;
+  final TextEditingController nroDocumentController;
+  final String idCliente;
+  final int idContrato;
+  final int idCuota;
+  final double valorCuota;
+
+  Future<void> _showMyDialog(BuildContext context, String titulo, String mensaje) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(titulo),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(mensaje),
+              ],
+            ),
+          ),
+          backgroundColor: Colors.black,
+          actions: <Widget>[
+            TextButton(
+              child: Text('Aceptar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> _send(BuildContext context) async {
-    print('fechaCuota -> ' + fechaCuotaController.text);
-    print('valorCuota -> ' + valorCuotaController.value.text);
+    if(valorReciboController.value.text.isEmpty ||
+        fechaReciboController.text.isEmpty ||
+        nroDocumentController.text.isEmpty) {
+      _showMyDialog(context, 'Advertencia', 'Deber llenar todos los campos.');
+      return;
+    }
+
+    if(valorCuota != double.parse(valorReciboController.value.text)) {
+      _showMyDialog(context, 'Advertencia', 'Valor del Recibo incorrecto.');
+      return;
+    }
 
     var domain = 'sire.bmcmotors.com.ec';
     var port = '8000';
-    var path = '/cuota/';
+    var path = '/medias/';
     var uri = Uri.http('$domain:$port', path);
-    var body = json.encode(
-        {
-          'fecha_cuota': fechaCuotaController.text,
-          'valor_cuota': valorCuotaController.text
-        }
-    );
+
     var headers = <String,String>{
       'Content-type' : 'application/json',
-      'Accept': 'application/json'
+      'Accept': 'application/json',
+      'file_name': '1-1-1.jpg',
+      'file_type': 'image/jpeg'
     };
-    var response = await http.post(uri, body: body, headers: headers);
-    if(response.statusCode == 200) {
-      int codCliente = int.parse(json.decode(response.body)['cod_cliente']);
-      //Navigator.push(context, new MaterialPageRoute(
-      //  builder: (BuildContext context) => new HomePage(
-      //      codCte: clienodCliente),
-      //)
-      // );
+
+    var response = await http.post(
+        uri,
+        body: File(this.imagePath).readAsBytesSync(),
+        headers: headers
+    );
+
+    print('response.statusCode -> ' + response.statusCode.toString());
+
+    if(response.statusCode == 201) {
+      int id = json.decode(response.body)['id'];
+      print('id -> ' + id.toString());
+
+      path = '/recibos/';
+      uri = Uri.http('$domain:$port', path);
+
+      var body = json.encode(
+          {
+            'id': id,
+            'fecha_recibo': fechaReciboController.text,
+            'cod_cliente': idCliente,
+            'num_contrato': idContrato,
+            'nro_cuota': idCuota,
+            'cod_forma_pago': "EFECTIVO",
+            'nro_recibo_documento': nroDocumentController.text,
+            "valor_recibo": double.parse(valorReciboController.value.text),
+            "valor_cuota": valorCuota
+          }
+      );
+
+      var headers = <String,String>{
+        'Content-type' : 'application/json',
+        'Accept': 'application/json',
+      };
+
+      print('fecha_recibo -> ' + fechaReciboController.text);
+      print('valor_recibo -> ' + valorReciboController.value.text);
+      print('cod_cliente -> ' + idCliente);
+      print('num_contrato -> ' + idContrato.toString());
+      print('nro_cuota -> ' + idCuota.toString());
+      print('cod_forma_pago -> ' + "EFECTIVO");
+      print('nro_recibo_documento -> ' + nroDocumentController.text);
+      print('valor_recibo -> ' + valorReciboController.value.text);
+      print('valor_cuota -> ' + valorCuota.toString());
+
+      var response2 = await http.post(uri, body: body, headers: headers);
+
+      if(response2.statusCode == 201) {
+        print('OK');
+      }
+
+      _showMyDialog(context, 'Envío Exitoso', 'Recibo Enviado Exitosamente.');
+
+      Navigator.push(context, new MaterialPageRoute(
+        builder: (BuildContext context) => new HomePage(
+            codCliente: int.parse(idCliente)
+        ),
+      )
+      );
     } else {
-      fechaCuotaController.clear();
-      valorCuotaController.clear();
+      //fechaCuotaController.clear();
+      //valorCuotaController.clear();
     }
   }
 
@@ -203,12 +336,12 @@ class _MainView extends StatelessWidget {
         const SizedBox(height: 12),
         _FechaCuotaInput(
           maxWidth: desktopMaxWidth,
-          fechaCuotaController: fechaCuotaController,
+          fechaCuotaController: fechaReciboController,
         ),
         const SizedBox(height: 12),
         _ValorCuotaInput(
           maxWidth: desktopMaxWidth,
-          valorCuotaController: valorCuotaController,
+          valorCuotaController: valorReciboController,
         ),
         const SizedBox(height: 12),
         _NroDocumentCuotaInput(
@@ -227,11 +360,11 @@ class _MainView extends StatelessWidget {
         imageController,
         const SizedBox(height: 10),
         _FechaCuotaInput(
-          fechaCuotaController: fechaCuotaController,
+          fechaCuotaController: fechaReciboController,
         ),
         const SizedBox(height: 10),
         _ValorCuotaInput(
-          valorCuotaController: valorCuotaController,
+          valorCuotaController: valorReciboController,
         ),
         const SizedBox(height: 10),
         _NroDocumentCuotaInput(
@@ -319,7 +452,7 @@ class _ValorCuotaInput extends StatelessWidget {
       child: Container(
         constraints: BoxConstraints(maxWidth: maxWidth ?? double.infinity),
         child: TextField(
-          inputFormatters: [CurrencyTextInputFormatter()],
+          inputFormatters: [CurrencyTextInputFormatter(symbol: '')],
           keyboardType: TextInputType.number,
           controller: valorCuotaController,
           decoration: InputDecoration(

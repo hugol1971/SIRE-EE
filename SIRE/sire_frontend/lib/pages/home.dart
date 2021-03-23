@@ -104,9 +104,9 @@ class _HomePageState extends State<HomePage>
           GalleryOptions.of(context).resolvedTextDirection() ==
               TextDirection.rtl;
       final verticalRotation =
-          isTextDirectionRtl ? turnsToRotateLeft : turnsToRotateRight;
+      isTextDirectionRtl ? turnsToRotateLeft : turnsToRotateRight;
       final revertVerticalRotation =
-          isTextDirectionRtl ? turnsToRotateRight : turnsToRotateLeft;
+      isTextDirectionRtl ? turnsToRotateRight : turnsToRotateLeft;
       tabBarView = Row(
         children: [
           Container(
@@ -131,9 +131,9 @@ class _HomePageState extends State<HomePage>
                   quarterTurns: verticalRotation,
                   child: _RallyTabBar(
                     tabs: _buildTabs(
-                            context: context, theme: theme, isVertical: true)
+                        context: context, theme: theme, isVertical: true)
                         .map(
-                      (widget) {
+                          (widget) {
                         // Revert the rotation on the tabs.
                         return RotatedBox(
                           quarterTurns: revertVerticalRotation,
@@ -154,7 +154,7 @@ class _HomePageState extends State<HomePage>
               child: TabBarView(
                 controller: _tabController,
                 children: _buildTabViews(contratoDatas).map(
-                  (widget) {
+                      (widget) {
                     // Revert the rotation on the tab views.
                     return RotatedBox(
                       quarterTurns: revertVerticalRotation,
@@ -194,37 +194,37 @@ class _HomePageState extends State<HomePage>
 
     return ApplyTextOptions(
         child: FutureBuilder<List<ContratoData>>(
-      future: getContratos(codCliente),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          //return Text(snapshot.data!.title);
-          return Scaffold(
-            body: SafeArea(
-              // For desktop layout we do not want to have SafeArea at the top and
-              // bottom to display 100% height content on the accounts view.
-              top: !isDesktop,
-              bottom: !isDesktop,
-              child: Theme(
-                // This theme effectively removes the default visual touch
-                // feedback for tapping a tab, which is replaced with a custom
-                // animation.
-                data: theme.copyWith(
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                ),
-                child: FocusTraversalGroup(
-                  policy: OrderedTraversalPolicy(),
-                  child:
+          future: getContratos(codCliente),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              //return Text(snapshot.data!.title);
+              return Scaffold(
+                body: SafeArea(
+                  // For desktop layout we do not want to have SafeArea at the top and
+                  // bottom to display 100% height content on the accounts view.
+                  top: !isDesktop,
+                  bottom: !isDesktop,
+                  child: Theme(
+                    // This theme effectively removes the default visual touch
+                    // feedback for tapping a tab, which is replaced with a custom
+                    // animation.
+                    data: theme.copyWith(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                    ),
+                    child: FocusTraversalGroup(
+                      policy: OrderedTraversalPolicy(),
+                      child:
                       getTabBarView(context, isDesktop, theme, snapshot.data),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          );
-        }
-        // By default, show a loading spinner.
-        return const Center(child: CircularProgressIndicator());
-      },
-    ));
+              );
+            }
+            // By default, show a loading spinner.
+            return const Center(child: CircularProgressIndicator());
+          },
+        ));
   }
 
   List<Widget> _buildTabs(
