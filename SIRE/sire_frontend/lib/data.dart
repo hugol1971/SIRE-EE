@@ -146,7 +146,7 @@ class ContratoData {
 
   final int numContrato;
 
-  final String fechaContrato;
+  final DateTime fechaContrato;
 
   final double valorContrato;
 
@@ -155,7 +155,7 @@ class ContratoData {
       codEmpresa: json['cod_empresa'],
       codCliente: json['cod_cliente'],
       numContrato: json['num_contrato'],
-      fechaContrato: json['fecha_contrato'],
+      fechaContrato: DateTime.parse(json['fecha_contrato']),
       valorContrato: json['valor_contrato'] * 1.0,
     );
   }
@@ -181,7 +181,7 @@ class DetailedCuotaData {
   final String codCliente;
   final int numContrato;
   final int nroCuota;
-  final String fechaCuota;
+  final DateTime fechaCuota;
   final double valorCuota;
   final double saldoCuota;
   final String tipoCuota;
@@ -196,7 +196,7 @@ class DetailedCuotaData {
       codCliente: json['cod_cliente'],
       numContrato: json['num_contrato'],
       nroCuota: json['nro_cuota'],
-      fechaCuota: json['fecha_cuota'],
+      fechaCuota: DateTime.parse(json['fecha_cuota']),
       valorCuota: json['valor_cuota'] * 1.0,
       saldoCuota: json['saldo_cuota'] * 1.0,
       tipoCuota: json['tipo_cuota'],

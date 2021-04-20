@@ -95,3 +95,13 @@ SIRE/SIRE-Rest/.idea/workspace.xml
 SIRE/SIRE-Rest/target/
 
 SIRE/SIRE-Crypt/target/
+
+SIRE/sire_frontend/gradle/
+
+SIRE/sire_frontend/local.properties
+
+SIRE/sire_frontend/pubspec.lock
+
+SIRE/sire_frontend/gradlew
+
+SIRE/sire_frontend/gradlew.bat

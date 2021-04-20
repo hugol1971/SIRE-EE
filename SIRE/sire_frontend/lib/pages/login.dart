@@ -90,10 +90,10 @@ class _MainView extends StatelessWidget {
     };
     var response = await http.post(uri, body: body, headers: headers);
     if(response.statusCode == 200) {
-      int codCliente = int.parse(json.decode(response.body)['cod_cliente']);
+      int numContrato = json.decode(response.body)['num_contrato'];
       Navigator.push(context, new MaterialPageRoute(
         builder: (BuildContext context) => new HomePage(
-            codCliente: codCliente),
+            numContrato: numContrato),
       ));
     } else {
       usernameController.clear();
@@ -126,6 +126,7 @@ class _MainView extends StatelessWidget {
         ),
       ];
     } else {
+      final desktopMaxWidth = 400.0 + 100.0 * (cappedTextScale(context) - 1);
       listViewChildren = [
         const _SmallLogo(),
         _UsernameInput(
@@ -135,7 +136,8 @@ class _MainView extends StatelessWidget {
         _PasswordInput(
           passwordController: passwordController,
         ),
-        _ThumbButton(
+        _LoginButton(
+          maxWidth: desktopMaxWidth,
           onTap: () {
             _login(context);
           },
@@ -231,15 +233,12 @@ class _SmallLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.symmetric(vertical: 64),
       child: SizedBox(
         height: 160,
         child: ExcludeSemantics(
-          child: FadeInImagePlaceholder(
-            image: AssetImage('logo.png', package: 'rally_assets'),
-            placeholder: SizedBox.shrink(),
-          ),
+          child: Image.asset('images/Sire_Pagos.png'),
         ),
       ),
     );
@@ -266,7 +265,7 @@ class _UsernameInput extends StatelessWidget {
           textInputAction: TextInputAction.next,
           controller: usernameController,
           decoration: InputDecoration(
-            labelText: GalleryLocalizations.of(context).rallyLoginUsername,
+            labelText: ('Número de Contrato'),//GalleryLocalizations.of(context).rallyLoginUsername,
           ),
         ),
       ),
@@ -293,7 +292,7 @@ class _PasswordInput extends StatelessWidget {
         child: TextField(
           controller: passwordController,
           decoration: InputDecoration(
-            labelText: GalleryLocalizations.of(context).rallyLoginPassword,
+            labelText: ('Clave de Usuario'),//GalleryLocalizations.of(context).rallyLoginPassword,
           ),
           obscureText: true,
         ),
@@ -386,10 +385,10 @@ class _LoginButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 30),
         child: Row(
           children: [
-            const Icon(Icons.check_circle_outline,
-                color: RallyColors.buttonColor),
-            const SizedBox(width: 12),
-            Text(GalleryLocalizations.of(context).rallyLoginRememberMe),
+            //const Icon(Icons.check_circle_outline,
+            //    color: RallyColors.buttonColor),
+            //const SizedBox(width: 12),
+            //Text(GalleryLocalizations.of(context).rallyLoginRememberMe),
             const Expanded(child: SizedBox.shrink()),
             _FilledButton(
               text: GalleryLocalizations.of(context).rallyLoginButtonLogin,

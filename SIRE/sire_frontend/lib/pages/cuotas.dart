@@ -6,7 +6,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:sire_frontend/charts/line_chart.dart';
+import 'package:intl/intl.dart';
 import 'package:sire_frontend/charts/pie_chart.dart';
 import 'package:sire_frontend/charts/vertical_fraction_bar.dart';
 import 'package:sire_frontend/colors.dart';
@@ -202,14 +202,16 @@ EntityCuotasView buildFinancialEntityFromContratoData(
     BuildContext context,
     ) {
   final amount = usdWithSignFormat(context).format(model.valorContrato);
-  final shortAccountNumber = model.fechaContrato;
+  final formatter = DateFormat("dd/MM/yyyy");
+  final fecha = formatter.format(model.fechaContrato);
+
   return EntityCuotasView(
     suffix: const Icon(Icons.chevron_right, color: Colors.grey),
     title: model.numContrato.toString(),
-    subtitle: '• • • • • • $shortAccountNumber',
+    subtitle: '$fecha',
     semanticsLabel: GalleryLocalizations.of(context).rallyAccountAmount(
       model.numContrato,
-      shortAccountNumber,
+      fecha,
       amount,
     ),
     indicatorColor: RallyColors.accountColor(accountDataIndex),
@@ -339,7 +341,7 @@ class _DetailedCuotasCard extends StatelessWidget {
   final String codCliente;
   final int numContrato;
   final int nroCuota;
-  final String fechaCuota;
+  final DateTime fechaCuota;
   final double valorCuota;
   final double saldoCuota;
   final String tipoCuota;
@@ -381,7 +383,7 @@ class _DetailedCuotasCard extends StatelessWidget {
               children: [
                 Expanded(
                   flex: 1,
-                  child: _EventCuotaTitle(title: actualizoPor),
+                  child: _EventCuotaTitle(title: nroCuota.toString()),
                 ),
                 _EventCuotaDate(date: fechaCuota),
                 Expanded(
@@ -400,7 +402,7 @@ class _DetailedCuotasCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _EventCuotaTitle(title: actualizoPor),
+                    _EventCuotaTitle(title: nroCuota.toString()),
                     _EventCuotaDate(date: fechaCuota),
                   ],
                 ),
@@ -441,17 +443,14 @@ class _EventCuotaAmount extends StatelessWidget {
 class _EventCuotaDate extends StatelessWidget {
   const _EventCuotaDate({Key key, @required this.date}) : super(key: key);
 
-  //final DateTime date; //TODO
-  final String date; //TODO
+  final DateTime date; //TODO
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Text(
-      //shortDateFormat(context).format(date), //TODO
-      date,
-      //semanticsLabel: longDateFormat(context).format(date), //TODO
-      semanticsLabel: date,
+      shortDateFormat(context).format(date), //TODO
+      semanticsLabel: longDateFormat(context).format(date), //TODO
       style: textTheme.bodyText2.copyWith(color: RallyColors.gray60),
     );
   }

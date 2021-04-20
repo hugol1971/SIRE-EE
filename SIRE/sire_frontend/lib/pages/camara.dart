@@ -137,6 +137,7 @@ class DisplayPictureScreen extends StatelessWidget {
     @required this.idContrato,
     @required this.idCuota,
     @required this.valorCuota,
+    @required this.onTap,
   }) : super(key: key);
 
   final String imagePath;
@@ -147,65 +148,7 @@ class DisplayPictureScreen extends StatelessWidget {
   final int idContrato;
   final int idCuota;
   final double valorCuota;
-
-  @override
-  Widget build(BuildContext context) {
-    return ApplyTextOptions(
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          centerTitle: true,
-          title: Text(
-            "Info Recibo", //TODO
-            style: Theme.of(context)
-                .textTheme
-                .bodyText2
-                .copyWith(fontSize: 18),
-          ),
-        ),
-        body: _MainView(
-          imageController: Image.file(
-            File(imagePath),
-            height: 450,
-          ),
-          imagePath: imagePath,
-          fechaReciboController: fechaReciboController,
-          valorReciboController: valorReciboController,
-          nroDocumentController: nroDocumentController,
-          idCliente: idCliente,
-          idContrato: idContrato,
-          idCuota: idCuota,
-          valorCuota: valorCuota,
-        ),
-      ),
-    );
-  }
-}
-
-class _MainView extends StatelessWidget {
-
-  const _MainView({
-    Key key,
-    this.imageController,
-    this.imagePath,
-    this.fechaReciboController,
-    this.valorReciboController,
-    this.nroDocumentController,
-    this.idCliente,
-    this.idContrato,
-    this.idCuota,
-    this.valorCuota
-  }) : super(key: key);
-
-  final Image imageController;
-  final String imagePath;
-  final TextEditingController fechaReciboController;
-  final TextEditingController valorReciboController;
-  final TextEditingController nroDocumentController;
-  final String idCliente;
-  final int idContrato;
-  final int idCuota;
-  final double valorCuota;
+  final VoidCallback onTap;
 
   Future<void> _showMyDialog(BuildContext context, String titulo, String mensaje) async {
     return showDialog<void>(
@@ -315,7 +258,7 @@ class _MainView extends StatelessWidget {
 
       Navigator.push(context, new MaterialPageRoute(
         builder: (BuildContext context) => new HomePage(
-            codCliente: int.parse(idCliente)
+            numContrato: idContrato
         ),
       )
       );
@@ -324,6 +267,71 @@ class _MainView extends StatelessWidget {
       //valorCuotaController.clear();
     }
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return ApplyTextOptions(
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          centerTitle: true,
+          title: Text(
+            "Info Recibo", //TODO
+            style: Theme.of(context)
+                .textTheme
+                .bodyText2
+                .copyWith(fontSize: 18),
+          ),
+        ),
+        body: _MainView(
+          imageController: Image.file(
+            File(imagePath),
+            height: 450,
+          ),
+          imagePath: imagePath,
+          fechaReciboController: fechaReciboController,
+          valorReciboController: valorReciboController,
+          nroDocumentController: nroDocumentController,
+          idCliente: idCliente,
+          idContrato: idContrato,
+          idCuota: idCuota,
+          valorCuota: valorCuota,
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.send),
+          onPressed: () {
+            _send(context);
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _MainView extends StatelessWidget {
+
+  const _MainView({
+    Key key,
+    this.imageController,
+    this.imagePath,
+    this.fechaReciboController,
+    this.valorReciboController,
+    this.nroDocumentController,
+    this.idCliente,
+    this.idContrato,
+    this.idCuota,
+    this.valorCuota
+  }) : super(key: key);
+
+  final Image imageController;
+  final String imagePath;
+  final TextEditingController fechaReciboController;
+  final TextEditingController valorReciboController;
+  final TextEditingController nroDocumentController;
+  final String idCliente;
+  final int idContrato;
+  final int idCuota;
+  final double valorCuota;
 
   @override
   Widget build(BuildContext context) {
@@ -348,12 +356,6 @@ class _MainView extends StatelessWidget {
         _NroDocumentCuotaInput(
           nroDocumentController: nroDocumentController,
         ),
-        _SendButton(
-          maxWidth: desktopMaxWidth,
-          onTap: () {
-            _send(context);
-          },
-        ),
       ];
     } else {
       listViewChildren = [
@@ -370,12 +372,6 @@ class _MainView extends StatelessWidget {
         const SizedBox(height: 10),
         _NroDocumentCuotaInput(
           nroDocumentController: nroDocumentController,
-        ),
-        const SizedBox(height: 12),
-        _SendButton(
-          onTap: () {
-            _send(context);
-          },
         ),
       ];
     }
@@ -408,7 +404,7 @@ class _FechaCuotaInput extends StatelessWidget {
 
   final double maxWidth;
   final TextEditingController fechaCuotaController;
-  final format = DateFormat("dd-MM-yyyy");
+  final format = DateFormat("dd/MM/yyyy");
 
   @override
   Widget build(BuildContext context) {
@@ -490,77 +486,6 @@ class _NroDocumentCuotaInput extends StatelessWidget {
             labelText: 'Nro. Documento',//GalleryLocalizations.of(context).rallyLoginPassword,
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _SendButton extends StatelessWidget {
-
-  const _SendButton({
-    Key key,
-    @required this.onTap,
-    this.maxWidth,
-  }) : super(key: key);
-
-  final double maxWidth;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.center,
-      child: Container(
-        constraints: BoxConstraints(maxWidth: maxWidth ?? double.infinity),
-        //padding: const EdgeInsets.symmetric(vertical: 24),
-        child: Row(
-          children: [
-            //const Icon(Icons.check_circle_outline,
-            //    color: RallyColors.buttonColor),
-            //const SizedBox(width: 12),
-            //Text(GalleryLocalizations.of(context).rallyLoginRememberMe),
-            const Expanded(child: SizedBox.shrink()),
-            _FilledButton(
-              text: 'Enviar',//GalleryLocalizations.of(context).rallyLoginButtonLogin,
-              onTap: onTap,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _FilledButton extends StatelessWidget {
-
-  const _FilledButton({
-    Key key,
-    @required this.text,
-    @required this.onTap
-  })
-      : super(key: key);
-
-  final String text;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextButton(
-      style: TextButton.styleFrom(
-        backgroundColor: RallyColors.buttonColor,
-        primary: Colors.black,
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 24),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-      onPressed: onTap,
-      child: Row(
-        children: [
-          const Icon(Icons.send),
-          const SizedBox(width: 6),
-          Text(text),
-        ],
       ),
     );
   }

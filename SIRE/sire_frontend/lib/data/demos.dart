@@ -128,7 +128,7 @@ Map<String, GalleryDemo> studies(GalleryLocalizations localizations) {
     ),
     'rally': GalleryDemo(
       title: 'Clientes',
-      subtitle: localizations.rallyDescription,
+      subtitle: ('Pago de Cuotas'),//localizations.rallyDescription,
       category: GalleryDemoCategory.study,
       studyId: 'rally',
     ),

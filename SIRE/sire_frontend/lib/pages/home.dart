@@ -20,22 +20,22 @@ const int turnsToRotateRight = 1;
 const int turnsToRotateLeft = 3;
 
 class HomePage extends StatefulWidget {
-  final int codCliente;
+  final int numContrato;
 
   const HomePage({
-    this.codCliente,
+    this.numContrato,
   });
 
   @override
-  _HomePageState createState() => _HomePageState(codCliente: codCliente);
+  _HomePageState createState() => _HomePageState(numContrato: numContrato);
 }
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin, RestorationMixin {
-  int codCliente;
+  int numContrato;
 
   _HomePageState({
-    this.codCliente,
+    this.numContrato,
   });
 
   Future<List<ContratoData>> contratoDatas;
@@ -51,10 +51,10 @@ class _HomePageState extends State<HomePage>
     _tabController.index = tabIndex.value;
   }
 
-  Future<List<ContratoData>> getContratos(int codCliente) async {
+  Future<List<ContratoData>> getContratos(int numContrato) async {
     var domain = 'sire.bmcmotors.com.ec';
     var port = '8000';
-    var path = '/contratos/' + codCliente.toString();
+    var path = '/contratos/' + numContrato.toString();
     var uri = Uri.http('$domain:$port', path);
     var headers = <String, String>{
       'Content-type': 'application/json',
@@ -194,7 +194,7 @@ class _HomePageState extends State<HomePage>
 
     return ApplyTextOptions(
         child: FutureBuilder<List<ContratoData>>(
-          future: getContratos(codCliente),
+          future: getContratos(numContrato),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               //return Text(snapshot.data!.title);
@@ -241,7 +241,7 @@ class _HomePageState extends State<HomePage>
       _RallyTab(
         theme: theme,
         iconData: Icons.article,
-        title: 'CONTRATOS', //TODO
+        title: 'CERTIFICADO DE COMPRA', //TODO
         tabIndex: 0,
         tabController: _tabController,
         isVertical: isVertical,

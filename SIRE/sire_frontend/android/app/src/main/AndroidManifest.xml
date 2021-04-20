@@ -2,7 +2,7 @@
     package="com.sire.sire_frontend">
    <application
         android:usesCleartextTraffic="true"
-        android:label="sire_frontend"
+        android:label="Sire Pagos"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
